@@ -162,6 +162,9 @@ class EoETrainer(BaseTrainer):
             if param.requires_grad and "lora_" in name:
                 print(name)
                 break
+                
+        torch.cuda.synchronize()
+        start_time = time.time()
 
         for epoch in range(self.args.num_train_epochs):
             model.train()
@@ -180,6 +183,10 @@ class EoETrainer(BaseTrainer):
                 progress_bar.set_postfix({"Loss": loss.item()})
 
         progress_bar.close()
+        torch.cuda.synchronize()
+        end_time = time.time()
+        training_time = end_time - start_time
+        logger.info(f"Training time for current task: {training_time} seconds")
 
     @torch.no_grad()
     def eval(self, model, eval_dataset, data_collator, seen_labels, label2task_id, oracle=False):
