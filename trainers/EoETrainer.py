@@ -218,8 +218,8 @@ class EoETrainer(BaseTrainer):
             outputs = model(**inputs)
 
             end_time = time.time()
-            inference_time = end_time - start_time
-            logging.info(f"Inference time for batch {step}: {inference_time:.6f} seconds")
+            inference_time = end_time - start_time / inputs['input_ids'].size(0)
+            logging.info(f"Inference time for 1 sample: {inference_time} seconds")
 
             hit_pred = outputs.indices
             hit_gold = [label2task_id[c] for c in inputs["labels"].tolist()]
