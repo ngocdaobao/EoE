@@ -25,7 +25,7 @@ class EoETrainer(BaseTrainer):
     def __init__(self, args, **kwargs):
         super().__init__(args, **kwargs)
         # self.task_idx = 0
-        self.task_idx = 1
+        self.task_idx = 0
         self.cur_seed = 0
 
     def run(self, data, model, tokenizer, label_order, seed=None):
