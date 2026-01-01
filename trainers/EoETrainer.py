@@ -185,7 +185,8 @@ class EoETrainer(BaseTrainer):
     def eval(self, model, eval_dataset, data_collator, seen_labels, label2task_id, oracle=False):
         eval_dataloader = DataLoader(
             eval_dataset,
-            batch_size=self.args.eval_batch_size,
+            # batch_size=self.args.eval_batch_size,
+            batch_size=1,
             shuffle=False,
             collate_fn=data_collator,
         )
@@ -213,9 +214,12 @@ class EoETrainer(BaseTrainer):
             if oracle:
                 inputs.update({"oracle": True, "task_idx": self.task_idx})
             #Time start
+            torch.cuda.synchronize()
             start_time = time.time()
 
             outputs = model(**inputs)
+
+            torch.cuda.synchronize()
 
             end_time = time.time()
             inference_time = end_time - start_time / inputs['input_ids'].size(0)
