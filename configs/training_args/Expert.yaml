@@ -5,7 +5,7 @@ save_model_dir: "./ckpt/"
 augment_type: "all"
 
 seed: 2021
-num_train_epochs: 10
+num_train_epochs: 30
 
 debug: false
 frozen: false
