@@ -15,7 +15,7 @@ from transformers import set_seed
 from data import BaseDataset
 from trainers import BaseTrainer
 from utils import CustomCollatorWithPadding, relation_data_augmentation
-
+import time
 logger = logging.getLogger(__name__)
 
 
@@ -60,11 +60,14 @@ class EoETrainer(BaseTrainer):
                 model.load_expert_model(expert_model)
                 logger.info(f"load first task model from {expert_model}")
             else:
+                start_time = time.time()
                 self.train(
                     model=model,
                     train_dataset=aug_train_dataset,
                     data_collator=default_data_collator
                 )
+                end_time = time.time()
+                logger.info(f"Task {self.task_idx} training time: {end_time - start_time} seconds")
 
             os.makedirs(f"./ckpt/{self.args.dataset_name}-{seed}-{self.args.augment_type}", exist_ok=True)
             model.save_classifier(
