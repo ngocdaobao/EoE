@@ -16,13 +16,16 @@ from data import BaseDataset
 from trainers import BaseTrainer
 from utils import CustomCollatorWithPadding, relation_data_augmentation
 
+import time
+
 logger = logging.getLogger(__name__)
 
 
 class EoETrainer(BaseTrainer):
     def __init__(self, args, **kwargs):
         super().__init__(args, **kwargs)
-        self.task_idx = 0
+        # self.task_idx = 0
+        self.task_idx = 1
         self.cur_seed = 0
 
     def run(self, data, model, tokenizer, label_order, seed=None):
@@ -205,11 +208,18 @@ class EoETrainer(BaseTrainer):
         hits = 0
         model.eval()
         for step, inputs in enumerate(eval_dataloader):
-
+            
             inputs = {k: v.to(self.args.device) for k, v in inputs.items()}
             if oracle:
                 inputs.update({"oracle": True, "task_idx": self.task_idx})
+            #Time start
+            start_time = time.time()
+
             outputs = model(**inputs)
+
+            end_time = time.time()
+            inference_time = end_time - start_time
+            print(f"Inference time for batch {step}: {inference_time:.6f} seconds")
 
             hit_pred = outputs.indices
             hit_gold = [label2task_id[c] for c in inputs["labels"].tolist()]
