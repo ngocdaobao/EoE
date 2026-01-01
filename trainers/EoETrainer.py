@@ -58,12 +58,12 @@ class EoETrainer(BaseTrainer):
             aug_train_dataset = BaseDataset(aug_train_data)
             model.new_task(num_train_labels)
 
-            # if self.task_idx == 0:
-            #     expert_model = f"./ckpt/{self.args.dataset_name}_{seed}_{self.args.augment_type}.pth"
-            #     model.load_expert_model(expert_model)
-            #     logger.info(f"load first task model from {expert_model}")
-            # else:
-            self.train(
+            if self.task_idx == 0:
+                expert_model = f"./ckpt/{self.args.dataset_name}_{seed}_{self.args.augment_type}.pth"
+                model.load_expert_model(expert_model)
+                logger.info(f"load first task model from {expert_model}")
+            else:
+                self.train(
                     model=model,
                     train_dataset=aug_train_dataset,
                     data_collator=default_data_collator
